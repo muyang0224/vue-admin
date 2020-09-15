@@ -1,22 +1,6 @@
 <template>
-  <div id="login">
-    <div class="box">
-      <!-- <el-radio-group class="btn1" v-model="tabPosition" style="margin-bottom: 30px;">
-    <el-radio-button label="top">登录</el-radio-button>
-    <el-radio-button label="right">注册</el-radio-button>
-    </el-radio-group> -->
-      <div class="box-d">
-        <li
-          v-for="(item, index) in liList"
-          :class="clickId == index ? 'li' : 'li2'"
-          :key="item.id"
-          @click="clickUpBtn(index)"
-        >
-          {{ item.name }}
-        </li>
-      </div>
-      <div>
-        <el-form ref="form" :model="form" label-width="80px" :rules="editForm" status-icon>
+<view class="com-Reg">
+  <el-form ref="formReg" :model="form" label-width="80px" :rules="editFormReg" status-icon >
           <el-form-item label="邮箱" prop="email" type="text">
             <el-input v-model="form.email" clearable type="text"></el-input>
           </el-form-item>
@@ -46,25 +30,19 @@
             >{{loginReg}}</el-button
           >
         </el-form>
-      </div>
-    </div>
-    
-  </div>
+</view>
 </template>
 
 <script>
-import {
-  stripscript,
+import{ 
+stripscript,
   verifyEmail,
   verifyPassword,
-  verifyClod,
-} from "../../utils/util.js";
-//import comReg from './component/reg.vue'
+  verifyClod}from '../../../utils/util.js'
 export default {
-
- // components:{"com-reg":comReg},
-  data() {
-    var validateEmail = (rule, value, callback) => {
+    props:['tab'],
+    data(){
+        var validateEmail = (rule, value, callback) => {
       //验证邮箱
       if (value === "") {
         callback(new Error("请正确填写邮箱"));
@@ -117,77 +95,32 @@ export default {
         callback();
       }
     };
-    return {
-      tab:false,
-      clickId: "", //点击tab
-      loginReg:"登录",
-      editForm: {
+        return{
+            form:{
+                email:"",
+                password:"",
+                passwords:"",
+                clod:""
+            },
+        editFormReg: {
         //验证表单 blur失去焦点时触发
         email: [{ validator: validateEmail, trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }],
         passwords: [{ validator: validatePasswords, trigger: "blur" }],
         clod: [{ validator: validateClod, trigger: "blur" }],
       },
-      liList: [
-        //tab
-        {
-          id: 1,
-          name: "登录",
-          current: true,
-        },
-        {
-          id: 2,
-          name: "注册",
-          current: false,
-        },
-      ],
-     // tabPosition: "top",
-
-      form: {
-        //表单
-        eamil: "",
-        password: "",
-        clod: "",
-        passwords:""
-      },
-    };
-  },
-
-  methods: {
-    // 点击Tab登录注册按钮
-    clickUpBtn(index) {
-      this.clickId = index;
-      this.tab=!this.tab
-      console.log(index);
-      this.clickId==0?this.loginReg="登录":this.loginReg="注册"
-    },
-
-    onSubmit(formName) {
-      console.log("submit!");
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
         }
-      });
+        
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-  },
-};
+    method(){
+
+    }
+
+}
 </script>
 
 <style lang="scss" scoped>
-#login {
-  padding: 0;
-  height: 100vh;
-  background-color: #344a5f;
-  margin: 0px auto;
-  overflow: hidden;
-}
+
 
 .box {
   padding: 20px;

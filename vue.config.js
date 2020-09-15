@@ -25,6 +25,7 @@ css: {
   requireModuleExtension: true
 },
   chainWebpack: config => {
+    
     config.resolve.alias
       .set("@", resolve("src"))
       .set("@v", resolve("src/views"))
