@@ -12,7 +12,12 @@ export function stripscript(str){
 //验证邮箱
 export function verifyEmail(value){
   var reg=/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-  return reg.test(value)? true : false
+  //return reg.test(value)? true : false
+  if(!reg.test(value)){
+    return true
+  }else{
+    return false
+  }
 }
 
 //验证密码

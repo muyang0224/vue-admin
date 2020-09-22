@@ -3,10 +3,10 @@ const resolve = function(dir) {
   return path.join(__dirname, dir);
 };
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "./" : "./",
-  outputDir: "dist",
+  publicPath: process.env.NODE_ENV === "production" ? "" : "/",
+  outputDir: process.env.NODE_ENV === "production" ? "dist" : "devdist",
   assetsDir: "static",
-  lintOnSave: true, // 是否开启eslint保存检测
+  lintOnSave: false, // 是否开启eslint保存检测
   productionSourceMap: false, // 是否在构建生产包时生成sourcdeMap
 
   
@@ -24,6 +24,7 @@ css: {
   // 启用 CSS modules for all css / pre-processor files.
   requireModuleExtension: true
 },
+
   chainWebpack: config => {
     
     config.resolve.alias
@@ -31,8 +32,8 @@ css: {
       .set("@v", resolve("src/views"))
       .set("@c", resolve("src/components"))
       .set("@u", resolve("src/utils"))
-      .set("@s", resolve("src/service")); /* 别名配置 */
-    config.optimization.runtimeChunk("single");
+      .set("@s", resolve("src/service")) /* 别名配置 */
+    config.optimization.runtimeChunk("single")
   },
   devServer: {
     // host: "localhost",
@@ -47,11 +48,12 @@ css: {
       warning: false,
       error: true
     },
+    hotOnly:false,
     /* 跨域代理 */
     proxy: {
       "/api": {
         /* 目标代理服务器地址 */
-        target: "http://m260048y71.zicp.vip", //
+        target: "http://www.web-jshtml.cn/productapi", 
         // target: "http://192.168.1.102:8888", //
         /* 允许跨域 */
         changeOrigin: true,
