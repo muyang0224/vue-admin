@@ -3,16 +3,16 @@
     <div class="box">
       <div class="box-d">
         <li
-          v-for="(item, index) in liList"
-          :class="clickId == index ? 'li' : 'li2'"
+          v-for="item in liList"
+          :class="{'li':item.current }"
           :key="item.id"
-          @click="clickUpBtn(index)"
+          @click="clickUpBtn(item)"
         >
           {{ item.name }}
         </li>
       </div>
       <div>
-        <el-form ref="form" :model="form" label-width="80px" :rules="editForm" status-icon>
+        <el-form ref="form" :model="form" label-width="80px" :rules="editForm" status-icon >
           <el-form-item label="邮箱" prop="email" type="text">
             <el-input v-model="form.email" clearable type="text"></el-input>
           </el-form-item>
@@ -32,13 +32,13 @@
             </el-col>
             <el-col :span="8">
               <div class="grid-content bg-purple-light">
-                <el-button class="btn3" type="primary" size="medium" 
-                  >获取验证码</el-button
+                <el-button  :disabled="disable" class="btn3" type="primary" size="medium"  @click="getCode()"
+                  >{{getcode}}</el-button
                 >
               </div>
             </el-col>
           </el-row>
-          <el-button class="btn2" type="danger" @click="onSubmit('form')" 
+          <el-button class="btn2" type="danger" @click="onSubmit('form')" :disabled="disableSum"
             >{{loginReg}}</el-button
           >
         </el-form>
@@ -58,9 +58,8 @@ import {
 //import comReg from './component/reg.vue'
 import { reactive, toRefs,onMounted, ref} from '@vue/composition-api';
 import axios from "axios";//axios
-import {GetSms} from "../../api/login.js";//接口
+import {getLogin, GetSms,getReg} from "../../api/login.js";//接口
 export default {
-
 
 setup (props,context) {
 
@@ -69,7 +68,7 @@ setup (props,context) {
       //验证邮箱
       if (value === "") {
         callback(new Error("请正确填写邮箱"));
-      } else if (!verifyEmail(value)) {
+      } else if (verifyEmail(value)) {
         callback(new Error("请输入有效的邮箱"));
       } else {
         callback(); //true 验证通过
@@ -146,32 +145,147 @@ setup (props,context) {
   const tab=ref(false)
   const clickId=ref("")//点击tab
   const loginReg=ref("登录")
+  const disable=ref(false)
+  const getcode=ref("获取验证码")
+  const timer=ref(null)
+  const disableSum=ref(true)
 
 //----------------------------------------------------------------------------------------------
 
-    // 点击Tab登录注册按钮
-   const clickUpBtn=(index)=> {
-      clickId.value = index;
-      tab.value=!tab.value
-      console.log(index);
-      clickId.value==0?loginReg.value="登录":loginReg.value="注册"
+// 点击Tab登录注册按钮
+   const clickUpBtn=(data)=> {
+     liList.forEach(item => {
+        item.current=false
+      });
+        data.current=true
+        loginReg.value=data.name
+        data.type=="login"?tab.value=false:tab.value=true
+        context.refs.form.resetFields()
+        clearInterval(timer.value)
+        updataCode({
+            text:"获取验证码",
+            boo:false
+          })
     }
+
+
+//提交表单
     const onSubmit=(formName)=> {
       console.log("submit!");
       context.refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          loginReg.value=="登录"?getLogins():getRegs()
+
+           clickUpBtn(liList[0])
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     }
+
+//获取验证码
+
+    const getCode=()=>{
+
+      if(verifyEmail(form.email)){
+        context.root.$message.error("邮箱格式有误");
+        return false
+      }
+      let data={
+        username:form.email
+      }
+      GetSms(data).then((response)=>{
+         context.root.$message({
+          message: response.data.message,
+          type: 'success'
+        });
+        getTimer(60)
+        disableSum.value=false
+
+      }).catch(()=>{
+        context.root.$message.error(response.data.message);
+
+      })
+    
+    }
+
+//登录
+ const getLogins=()=>{
+     let data={
+     username:form.email,
+     password:form.password,
+     code:form.clod
+   }
+   getLogin(data).then((response)=>{
+      context.root.$message({
+          message: response.data.message,
+          type: 'success'
+        });
+   }).catch((error)=>{
+     context.root.$message.error(response.data.message);
+
+   })
+
+}
+//注册 
+ const getRegs=()=>{
+   let data={
+     username:form.email,
+     password:form.password,
+     code:form.clod,
+     module:'register'
+   }
+   getReg(data).then((response)=>{
+      context.root.$message({
+          message: response.data.message,
+          type: 'success'
+        });
+   }).catch((error)=>{
+     context.root.$message.error(response.data.message);
+
+   })
+ }
+//计时器
+
+const getTimer=(number)=>{
+  let time=number
+  if(timer.value){clearInterval(timer.value)}
+  timer.value=setInterval(() => {
+          time--
+      if(time===0){
+          updataCode({
+            text:`点击重新获取`,
+            boo:false
+          })
+          clearInterval(timer.value); 
+      }else{
+          console.log(time)
+          // getcode.value=`倒计时${time}秒`
+          // disable.value=true
+          updataCode({
+            text:`倒计时${time}秒`,
+            boo:true
+          })
+    }
+  },1000);
+ 
+
+}
+
+
 //-------------------------------------------------挂载完成后------------------------------------------------------
     onMounted(() => {
       
-
     });
+
+//------------------------------------------------封装-----------------------------------------------------------
+//验证码按钮状态
+  const updataCode=(code)=>{
+    getcode.value=code.text
+    disable.value=code.boo
+  }
+
 
 //---------------------------------------------------------------------------------------------------------------
       return {
@@ -182,9 +296,19 @@ setup (props,context) {
        clickId,
        loginReg,
        clickUpBtn,
-      onSubmit,
-     
+       onSubmit,
+       getCode,
+       validateEmail,
+       getcode,
+       disable,
+       timer,
+       disableSum,
+       getLogins,
+       getRegs
     }
+  
+
+
     }
  
   
@@ -241,7 +365,7 @@ setup (props,context) {
   cursor: pointer;
   border-radius: 5px;
 }
-.li2 {
+li {
   display: inline-block;
   width: 60px;
   height: 30px;

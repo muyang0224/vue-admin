@@ -21,13 +21,8 @@ service.interceptors.request.use(
     //业务需求
     console.log(config.headers)
 
-
     //最终目的不是在请求头添加参数
     config.headers['Tokey']='111111'
-
-
-
-
 
     return config;
   },
@@ -51,8 +46,7 @@ service.interceptors.response.use(
       //return response;
       return Promise.resolve(response)
     }
-
-    
+ 
   },
   function(error) {
     //对响应错误做些什么

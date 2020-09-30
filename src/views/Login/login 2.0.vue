@@ -1,10 +1,7 @@
 <template>
   <div id="login">
     <div class="box">
-      <!-- <el-radio-group class="btn1" v-model="tabPosition" style="margin-bottom: 30px;">
-    <el-radio-button label="top">登录</el-radio-button>
-    <el-radio-button label="right">注册</el-radio-button>
-    </el-radio-group> -->
+
       <div class="box-d">
         <li
           v-for="(item, index) in liList"
@@ -59,10 +56,7 @@ import {
   verifyPassword,
   verifyClod,
 } from "../../utils/util.js";
-//import comReg from './component/reg.vue'
 export default {
-
- // components:{"com-reg":comReg},
   data() {
     var validateEmail = (rule, value, callback) => {
       //验证邮箱
@@ -118,11 +112,13 @@ export default {
       }
     };
     return {
+
       tab:false,
       clickId: "", //点击tab
       loginReg:"登录",
+
+//验证表单 blur失去焦点时触发
       editForm: {
-        //验证表单 blur失去焦点时触发
         email: [{ validator: validateEmail, trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }],
         passwords: [{ validator: validatePasswords, trigger: "blur" }],

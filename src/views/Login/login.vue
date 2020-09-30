@@ -123,6 +123,7 @@ export default {
         callback();
       }
     };
+
 //验证验证码    
     let validateClod = (rule, value, callback) => {
       //过滤后的数据
@@ -230,14 +231,13 @@ export default {
          clearCountDown()
     };
 
-
 //点击提交按钮
     const onSubmit = (formName) => {
      
       console.log(login.value)
       context.refs[formName].validate((valid) => {
         if (valid) {
-          login.value==="login"?submitLOgin():submitReg()
+          login.value==="login"?submitLogin():submitReg()
           // if(login.value==="login"){
           //   submitLogin()
           // }else{
@@ -265,6 +265,13 @@ export default {
           message: response.data.message,
           type: 'success'
         });
+        context.root.$router.push({
+          name:"Home",
+          // params:{
+          //   id:"",
+          //   username:""
+          // }
+        })
       }).catch(()=>{
          context.root.$message.error(data.message)
       })
@@ -289,7 +296,6 @@ export default {
           }).catch(()=>{
             context.root.$message.error(data.message);
           })
-      
     })
 
 //倒计时
@@ -305,12 +311,11 @@ export default {
           clearTime()                 //清除计数器
          updateButton(false,"再次获取")
         }else{
-           codeButtonDisable.codeButton=`倒计时${time}秒`
+           updateButton(true,`倒计时${time}秒`)
         }
        
       }, 1000);
     })
-
 
 //---------------------------------------生命周期----------------------------------------------------
 
@@ -318,8 +323,6 @@ export default {
     onMounted(() => {
     
     });
-
-    
 
 //---------------------------------------封装的方法--------------------------------------------------
 

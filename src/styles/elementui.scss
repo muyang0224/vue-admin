@@ -1,0 +1,8 @@
+.el-submenu .el-menu-item{
+    &.is-active {background-color:$mainColor !important;}
+ }
+li.el-submenu{
+    .is-active .is-opened .el-submenu__title{
+    background-color: royalblue ;
+    } 
+}
