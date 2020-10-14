@@ -12,15 +12,18 @@
 </template>
 
 <script>
+import {computed} from '@vue/composition-api';
 import LayoutHeader from './components/Header'
 import LayoutNav from './components/Nav'
 import LayoutMain from './components/Main'
 export default {
     name:"layout",
     components:{LayoutHeader,LayoutNav,LayoutMain},
-    setup(){
-
-
+    setup(props,{root}){
+      const menuStatus=computed(()=>root.$store.state.isCollapse);
+      return{
+        menuStatus
+      }
     }
 }
 </script>
@@ -40,12 +43,12 @@ export default {
     line-height: 200px;
   }
   
-  .el-main {
+  /* .el-main {
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
     line-height: 160px;
-  }
+  } */
   
   body > .el-container {
     margin-bottom: 40px;

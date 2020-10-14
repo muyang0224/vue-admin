@@ -260,11 +260,8 @@ export default {
         password:sha1(form.password),
         code:form.clod
       }
-      getLogin(data).then((response)=>{
-         context.root.$message({
-          message: response.data.message,
-          type: 'success'
-        });
+      context.root.$store.dispatch('login',data)
+      .then((response)=>{
         context.root.$router.push({
           name:"Home",
           // params:{
@@ -275,6 +272,7 @@ export default {
       }).catch(()=>{
          context.root.$message.error(data.message)
       })
+     
     
     })
 

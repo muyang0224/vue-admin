@@ -19,12 +19,12 @@ export default {
         // right: 0;
         // bottom: 0;
         // border: 0.1px solid #000;
-        // //padding: 0px 0 0 250px;
+        //padding: 0px 0 0 250px;
         // border-bottom:none;
-        // -webkit-box-sizing: border;
+        // -webkit-box-sizing: border;auto
         // background: #ceebb3;
-        // margin: 20px;
         height:100%;
         background: #ceebb3;
+
     }
 </style>

@@ -5,28 +5,40 @@
       <div class="header-close pull-right">
           <img class="pull-left" src="../../../assets/timg.jpg" alt="">
           <div class="user-info pull-left" >
-               管理员
+            {{username}}
           </div>
-          <div class="header-icons pull-right"><svg-icon style="margin-right:50px;margin-left:30px;margin-top:20px" iconClass="close" className="close"/></div>
-          
+          <div @click="close" class="header-icons pull-right"><svg-icon style="margin-right:50px;margin-left:30px;margin-top:20px" iconClass="close" className="close"/></div>
       </div>
   </div>
 </template>
 
 <script>
 import "../../../styles/config.scss"
-import { onMounted, reactive, ref } from "@vue/composition-api";//vue3.api
+import { computed, onMounted, reactive, ref } from "@vue/composition-api";//vue3.api
 export default {
     name:'layoutHeader',
   setup(props,{root}){
-    const navMenuState=()=>{
+    const navMenuState=()=>{//菜单伸缩
         root.$store.commit('SET_COLLAPSE')
     }
-    const photo=ref("../../../assets/timg.jpg")
+    const username=computed(()=>root.$store.state.username)
+    //const photo=ref("../../../assets/timg.jpg")
 
+     const close=(done)=>{
+          root.$router.push({//路由跳转
+          name:"Login",
+          // params:{
+          //   id:"",
+          //   username:""
+          // }
+        })
+     
+    }
     return{
     navMenuState,
-    photo
+    username,
+   // photo,
+    close,//退出登录
 }
 }
 

@@ -1,6 +1,7 @@
 import { forEachChild } from "typescript";
 import Vue from "vue";
 import VueRouter from "vue-router";
+
 Vue.use(VueRouter);
 //引入布局组件
 import Layout from "@/views/Layout/index.vue"

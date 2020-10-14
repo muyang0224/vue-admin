@@ -76,5 +76,6 @@ return{
         // width:$nav;//$nav=250px
          height:100vh;
          background: cadetblue;
+       //  @include webkit(transition,all .3s ease 0s);
     }
 </style>

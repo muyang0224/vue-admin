@@ -1,4 +1,5 @@
 const path = require("path");
+const { config } = require("process");
 const resolve = function(dir) {
   return path.join(__dirname, dir);
 };
@@ -25,16 +26,42 @@ css: {
   requireModuleExtension: true
 },
 
-  chainWebpack: config => {
-    
-    config.resolve.alias
-      .set("@", resolve("src"))
-      .set("@v", resolve("src/views"))
-      .set("@c", resolve("src/components"))
-      .set("@u", resolve("src/utils"))
-      .set("@s", resolve("src/service")) /* 别名配置 */
-    config.optimization.runtimeChunk("single")
-  },
+   chainWebpack: (config) => {
+    const svgRule=config.module.rule("svg");
+    svgRule.uses.clear();
+    svgRule
+    .use("svg-sprite-loader")
+    .loader("svg-sprite-loader")
+    .options({
+      symbolId:"icon-[name]",
+      include:["./src/icons"]
+    });
+  //   config.resolve.alias
+  //     .set('vue',resolve('vue/dist/vue.js'))
+  //     .set("@", resolve("src"))
+  //     .set("@v", resolve("src/views"))
+  //     .set("@c", resolve("src/components"))
+  //     .set("@u", resolve("src/utils"))
+  //     .set("@s", resolve("src/service")) /* 别名配置 */
+  //   config.optimization.runtimeChunk("single")
+   },
+   /**
+    * vue3.0两种运行模式
+    * 1.compiler（模板模式）
+    * 2.runtime模式（运行时）
+    * vue模块默认为runtime模式，js指向了"dist/vue.runtime.common.js"位置
+    */
+    configureWebpack:config=>{
+      config.resolve={//怕配置解析别名
+        extensions: [".js", ".json", ".vue"],
+        alias:{
+          'vue':'vue/dist/vue.js',//改变vue指向
+          "@": path.resolve(__dirname, "./src"),
+          "@c":path.resolve(__dirname,"./src/components")
+        }
+      }
+    },
+   
   devServer: {
     // host: "localhost",
     /* 本地ip地址 */
@@ -53,7 +80,7 @@ css: {
     proxy: {
       "/api": {
         /* 目标代理服务器地址 */
-        target: "http://www.web-jshtml.cn/productapi", 
+        target: "http://www.web-jshtml.cn/productapi/token", 
         // target: "http://192.168.1.102:8888", //
         /* 允许跨域 */
         changeOrigin: true,

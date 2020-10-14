@@ -3,3 +3,16 @@
 $nav:200px;
 //主颜色
 $mainColor:#f56c6c;
+
+@mixin labelDom($align,$width,$line-height:"normal"){
+    label{
+        float:left;
+        line-height: $line-height+px;
+        width: $width+px;
+        text-align:$align+px
+    }
+
+    .warp-content{
+        margin-left:$width+px;
+    }
+}
