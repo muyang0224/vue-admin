@@ -112,11 +112,15 @@
 </template>
 
 <script>
-import { reactive, ref } from "@vue/composition-api";
+import { reactive, ref, watch } from "@vue/composition-api";
 import DialogInfo from "./dialog/info.vue"
+import {global} from "../../utils/global3.0.js"
 export default {
+  name:"infoIndex",
   components:{ DialogInfo},
   setup(props,{root}) {
+    const {confirm,str}=global();
+    watch(()=>console.log(str.value))
 
     const value = ref("");
     const value2 = ref("");
@@ -205,42 +209,37 @@ export default {
     }
 
      const open=()=> {
-        root.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          root.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
-          root.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-
+        confirm({
+        centent:'删除该条信息, 是否继续?', 
+        title:'提示',
+        fn:getdelete,
+        id:"111"
+      })
+      //   root.confirm({
+      //   centent:'删除该条信息, 是否继续?', 
+      //   title:'提示'
+      // })
+     
      }
 
     const deleteAll=()=>{
-      root.$confirm('删除全部文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          root.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
-          root.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
+      //vue2.0this.aaa()
+      confirm({
+        centent:'删除全部文件, 是否继续?', 
+        title:'提示',
+        fn:getdelete,
+        id:"222"
+      })
+      // root.confirm({
+      //   centent:'删除全部文件, 是否继续?', 
+      //   title:'提示',
+      //   fn:getdelete
+      // })
+     
     }
-
+    const getdelete=(value)=>{
+      console.log(value)
+    }
 
 
     return {
@@ -264,7 +263,8 @@ export default {
       // form
       close,
       open,
-      deleteAll
+      deleteAll,
+      
     };
   }
 };
@@ -285,9 +285,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 @import "../../styles/config.scss";
-.box {
-  padding: 50px;
-}
+
 .label-wrap {
   &.category {
     @include labelDom(left, 60, 40);
